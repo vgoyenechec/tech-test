@@ -1,0 +1,14 @@
+server:
+  host: localhost
+  port: 8443
+
+logging:
+  level:
+    de.focus_shift.impl.DefaultHolidayManager: INFO
+
+spring:
+  data:
+    mongodb:
+      uri: "mongodb+srv://valegoye:techtest1234@bgt-tech-test.70z1j.mongodb.net/?retryWrites=true&w=majority&appName=bgt-tech-test"
+      database: "tech_test"
+
