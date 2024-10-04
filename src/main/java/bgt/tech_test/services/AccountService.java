@@ -35,12 +35,9 @@ public class AccountService {
     private TransactionMapper transactionMapper;
 
     public List<TransactionDTO> getLastTransactions(String clientId) {
-        try{
-        return transactionRepository.findAllByClientId(clientId)
-                .stream().map(transactionMapper::toDTO)
-                .toList();
-        }
-        catch (Exception e){
+        try {
+            return transactionRepository.findAllByClientId(clientId).stream().map(transactionMapper::toDTO).toList();
+        } catch (Exception e) {
             throw new BusinessException("Ocurrió un error consultando las transacciones");
         }
     }
@@ -48,29 +45,37 @@ public class AccountService {
     public TransactionResponseDTO createSubscription(String fundId, String clientId, double depositAmount) {
         try {
             Client client = clientRepository.findById(clientId).orElseThrow(() -> new BusinessException("No existe este cliente"));
+
             Fund fund = fundRepository.findById(fundId).orElseThrow(() -> new BusinessException("No existe este fondo"));
-            if (client.getBalance() >= fund.getMinimumSubscriptionAmount() && depositAmount >= fund.getMinimumSubscriptionAmount()) {
-                if (!subscriptionExists(client, fundId)) {
-                    client.setBalance(client.getBalance() - depositAmount);
 
-                    Subscription subscription = Subscription.builder().fundId(fundId).balance(depositAmount).build();
-
-                    client.getSubscriptions().add(subscription);
-                    clientRepository.save(client);
-
-                    createTransaction(fund, depositAmount, OPENING, clientId);
-                    log.info("Apertura Exitosa");
-                    return TransactionResponseDTO.builder().code("00").message(String.format("La vinculación con el fondo %s ha sido exitosa", fund.getName())).build();
-                } else {
-                    return TransactionResponseDTO.builder().code("98").message(String.format("El cliente ya está suscrito al fondo: %s", fund.getName())).build();
-                }
-            } else {
+            if (client.getBalance() < depositAmount) {
                 return TransactionResponseDTO.builder().code("99").message(String.format("No tiene saldo disponible para vincularse al fondo %s", fund.getName())).build();
             }
-        } catch (BusinessException e){
+
+            if (depositAmount < fund.getMinimumSubscriptionAmount()) {
+                return TransactionResponseDTO.builder().code("97").message(String.format("El monto mínimo para vincularse al fondo %s es de %,.2f", fund.getName(), fund.getMinimumSubscriptionAmount())).build();
+            }
+
+            if (subscriptionExists(client, fundId)) {
+                return TransactionResponseDTO.builder().code("98").message(String.format("El cliente ya está suscrito al fondo: %s", fund.getName())).build();
+            }
+
+            client.setBalance(client.getBalance() - depositAmount);
+
+            Subscription subscription = Subscription.builder().fundId(fundId).balance(depositAmount).build();
+            client.getSubscriptions().add(subscription);
+
+            clientRepository.save(client);
+
+            createTransaction(fund, depositAmount, OPENING, clientId);
+
+            log.info("Apertura Exitosa para el cliente: {}", clientId);
+            return TransactionResponseDTO.builder().code("00").message(String.format("La vinculación con el fondo %s ha sido exitosa", fund.getName())).build();
+
+        } catch (BusinessException e) {
             throw e;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
+            log.error("Error al crear la suscripción para el cliente {} y el fondo {}: {}", clientId, fundId, e.getMessage());
             throw new BusinessException("Ocurrió un error abriendo la suscripción!");
         }
     }
@@ -97,9 +102,9 @@ public class AccountService {
             log.info("Cancelacion exitosa");
 
             return TransactionResponseDTO.builder().code("00").message(("Cancelación exitosa al fondo")).build();
-            } catch (BusinessException e){
-                throw e;
-            }catch (Exception e) {
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
             throw new BusinessException("Ocurrió un error cancelando la suscripción!");
         }
     }
@@ -111,14 +116,7 @@ public class AccountService {
 
     private void createTransaction(Fund fund, double amount, String type, String clientId) {
         try {
-            Transaction transaction = Transaction.builder().uid(UUID.randomUUID().toString())
-                    .timestamp(new Date())
-                    .clientId(clientId)
-                    .amount(amount)
-                    .fundId(fund.getId())
-                    .fundName(fund.getName())
-                    .type(type)
-                    .notificationSent(true) // TODO
+            Transaction transaction = Transaction.builder().uid(UUID.randomUUID().toString()).timestamp(new Date()).clientId(clientId).amount(amount).fundId(fund.getId()).fundName(fund.getName()).type(type).notificationSent(true) // TODO
                     .build();
             transactionRepository.save(transaction);
             log.info("Transacción Exitosa");

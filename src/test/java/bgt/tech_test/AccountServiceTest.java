@@ -218,7 +218,7 @@ public class AccountServiceTest {
 
     @Test
     void createSubscription_InsufficientBalance() {
-        client.setBalance(800.0); // less than minimum deposit
+        client.setBalance(200.0); //balance is not enough to cover the amount that the clients want to deposit
 
         when(clientRepository.findById("client123")).thenReturn(Optional.of(client));
         when(fundRepository.findById("fundABC")).thenReturn(Optional.of(fund));
@@ -231,7 +231,7 @@ public class AccountServiceTest {
         assertNotNull(response);
         assertEquals("99", response.getCode());
         assertEquals("No tiene saldo disponible para vincularse al fondo Fondo ABC", response.getMessage());
-        assertEquals(800.0, client.getBalance()); // Balance does not change
+        assertEquals(200.0, client.getBalance()); // Balance does not change
         assertEquals(0, client.getSubscriptions().size());
     }
 
