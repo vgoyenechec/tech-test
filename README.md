@@ -20,8 +20,8 @@ This is a Java application using MongoDB for data management, built with Spring 
 ### 3. Configure MongoDB Cluster
 Create your own MongoDB Cluster if you want to run it on local:
 1. Database name: tech_test.
-2. For example, replace username = bgt-user and password = bgt-password in the application.yaml file.
-3. After creating your cluster, you should have 3 tables: clients, funds, and transactions
+2. After creating your cluster, you should have 3 tables: clients, funds, and transactions
+3. Replace the uri connection in the application.yaml file.
 4. Add your default client: 
    ```json
      {
@@ -67,7 +67,8 @@ Create your own MongoDB Cluster if you want to run it on local:
       "minimum_subscription_amount": 50000,
       "category": "FIC"
       }]
-
+#### OR
+1. Replace the `<username>`=`bgt-user` and the `<password>` = `bgt-password` to connect to my cluster. It's available until 11/10/2024.
 ### Run the app
       mvn spring-boot:run
 
