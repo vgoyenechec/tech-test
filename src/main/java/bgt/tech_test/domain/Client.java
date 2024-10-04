@@ -1,5 +1,6 @@
 package bgt.tech_test.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @Document(collection = "clients")
 public class Client {
     @Id
@@ -22,7 +24,6 @@ public class Client {
     @Field("preferred_notification")
     private String preferredNotification; // sms or email
 
-    @Field("transaction_history")
-    private List<String> transactionHistory;
+    private List<Subscription> subscriptions;
 
 }
