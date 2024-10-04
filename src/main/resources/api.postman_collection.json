@@ -1,0 +1,103 @@
+{
+	"info": {
+		"_postman_id": "001ad2ea-4794-4653-b82a-90473c1a4413",
+		"name": "api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5967354",
+		"_collection_link": "https://solar-firefly-686189.postman.co/workspace/Prueba-Fonyou~e8330e0e-a0e9-4061-8308-e46b5e852d72/collection/5967354-001ad2ea-4794-4653-b82a-90473c1a4413?action=share&creator=5967354&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "open fund",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/openFund?clientId=66febf3eae5fa66b652750cf&fundId=1&amount=500000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"openFund"
+					],
+					"query": [
+						{
+							"key": "clientId",
+							"value": "66febf3eae5fa66b652750cf"
+						},
+						{
+							"key": "fundId",
+							"value": "1"
+						},
+						{
+							"key": "amount",
+							"value": "500000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete fund",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/closeFund?clientId=66febf3eae5fa66b652750cf&fundId=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"closeFund"
+					],
+					"query": [
+						{
+							"key": "clientId",
+							"value": "66febf3eae5fa66b652750cf"
+						},
+						{
+							"key": "fundId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Transactions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/transactions?clientId=66febf3eae5fa66b652750cf",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "fundId",
+							"value": "66febdfbae5fa66b652750c7",
+							"disabled": true
+						},
+						{
+							"key": "clientId",
+							"value": "66febf3eae5fa66b652750cf"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
